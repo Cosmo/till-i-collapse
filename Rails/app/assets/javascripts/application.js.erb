@@ -16,13 +16,22 @@
 //= require_tree .
 
 function collapsed() {
+  // alert(data.message);
+  $("#video")[0].pause();
+  $("body").css({ backgroundColor: "#FF0000" });
+  $("#video")[0].currentTime = $("#video")[0].currentTime - 10;
+  
   var audio = new Audio('/boom.mp3');
   audio.load();
   audio.play();
 }
 
-$(function(){
+function awake() {
   $("#video")[0].play();
+  $("body").css({ backgroundColor: "#00FF00" });
+}
+
+$(function(){
   
   $("#play").on("click", function(event){
     $("#video")[0].play();
@@ -31,6 +40,11 @@ $(function(){
   
   $("#collapse").on("click", function(event){
     collapsed();
+    event.preventDefault();
+  });
+
+  $("#awake").on("click", function(event){
+    awake();
     event.preventDefault();
   });
 
@@ -54,99 +68,49 @@ $(function(){
   var pusher = new Pusher('<%= Rails.application.secrets.pusher_secret %>');
   var channel = pusher.subscribe('collapse');
   channel.bind('collapsed', function(data) {
-    // alert(data.message);
-    $("#video")[0].pause();
-    $("body").css({ backgroundColor: "#FF0000" });
     collapsed();
   });
   
-  $("#mode")
+  channel.bind('awake', function(data) {
+    awake();
+  });
   
-});
-
-
-
-
-
-
-
-$(document).ready(function(){
-
+  
+  
+  
+  
   $(document).keydown(function (e){
+    if(e.keyCode === 13) {
+      $("#video-wrapper").fadeIn();
+      $("#video")[0].play();
+    }
+    if(e.keyCode === 27) {
+      $("#video-wrapper").fadeOut();
+      $("#video")[0].pause();
+    }
+    
     if(e.keyCode === 39) { // right
-      if ($(".list-item.siliconvalley").hasClass("active")) {
-        $(".list-item.siliconvalley").removeClass("active");
-        $(".list-item.breakingbad").addClass("active");
-
-        $("#meta .wrapper").removeClass("");
-        $("#meta .wrapper").addClass("breakingbad");
-
-        $("#poster-image .wrapper").removeClass("");
-        $("#poster-image .wrapper").addClass("breakingbad");
-      }
-      else if ($(".list-item.breakingbad").hasClass("active")) {
-        $(".list-item.breakingbad").removeClass("active");
-        $(".list-item.dexter").addClass("active");
-
-        $("#meta .wrapper").removeClass("");
-        $("#meta .wrapper").addClass("dexter");
-
-        $("#poster-image .wrapper").removeClass("");
-        $("#poster-image .wrapper").addClass("dexter");
-      }
-      else if ($(".list-item.dexter").hasClass("active")) {
-        $(".list-item.dexter").removeClass("active");
-        $(".list-item.gameofthrones").addClass("active");
-
-        $("#meta .wrapper").removeClass("");
-        $("#meta .wrapper").addClass("gameofthrones");
-
-        $("#poster-image .wrapper").removeClass("");
-        $("#poster-image .wrapper").addClass("gameofthrones");
-      }
+      var next = $(".recently .list-item.active").next();
+      $(".recently .list-item.active").removeClass("active");
+      next = next.length < 1 ? $(".recently .list-item").first() : next;
+      next.addClass("active");
     }
-
     if(e.keyCode === 37) { // left
-      if ($(".list-item.gameofthrones").hasClass("active")) {
-        $(".list-item.gameofthrones").removeClass("active");
-        $(".list-item.dexter").addClass("active");
-
-        $("#meta .wrapper").removeClass("");
-        $("#meta .wrapper").addClass("dexter");
-
-        $("#poster-image .wrapper").removeClass("");
-        $("#poster-image .wrapper").addClass("dexter");
-      }
-      else if ($(".list-item.dexter").hasClass("active")) {
-        $(".list-item.dexter").removeClass("active");
-        $(".list-item.breakingbad").addClass("active");
-
-        $("#meta .wrapper").removeClass("");
-        $("#meta .wrapper").addClass("breakingbad");
-
-        $("#poster-image .wrapper").removeClass("");
-        $("#poster-image .wrapper").addClass("breakingbad");
-      }
-      else if ($(".list-item.breakingbad").hasClass("active")) {
-        $(".list-item.breakingbad").removeClass("active");
-        $(".list-item.siliconvalley").addClass("active");
-
-        $("#meta .wrapper").removeClass("");
-        $("#meta .wrapper").addClass("siliconvalley");
-
-        $("#poster-image .wrapper").removeClass("");
-        $("#poster-image .wrapper").addClass("siliconvalley");
-      }
+      var previous = $(".recently .list-item.active").prev();
+      $(".recently .list-item.active").removeClass("active");
+      previous = previous.length < 1 ? $(".recently .list-item").last() : previous;
+      previous.addClass("active");
     }
-
-    if(e.keyCode === 13) { // enter
-      if ($(".list-item.siliconvalley").hasClass("active")) {
-        if ($("#poster").hasClass("active")) {
-          $("#poster").removeClass("active");
+    
+    
+    
+    
+    if(e.keyCode === 77) { // enter
+      if ($("#mode").is(":visible")) {
+          $("#mode").hide();
         } else {
-          $("#poster").addClass("active");
-        }
-      }
+          $("#mode").show();
+        }  
     }
   });
 

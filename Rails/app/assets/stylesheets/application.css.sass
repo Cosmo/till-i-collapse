@@ -14,6 +14,36 @@
  *= require_self
  */
 
+@import "font-awesome-sprockets"
+@import "font-awesome"
+
+#video-wrapper
+  position: absolute
+  top: 0
+  left: 0
+  right: 0
+  bottom: 0
+  z-index: 900
+  background-color: #000000
+  display: none
+
+#backward
+  width: 200px
+  height: 200px
+  color: #fff
+  position: absolute
+  top: 50%
+  left: 50%
+  margin-left: -100px
+  margin-top: -100px
+  border-radius: 10px
+  background-color: rgba(0,0,0,.6)
+  z-index: 9999
+  text-align: center
+
+  .fa
+    margin-top: 60px
+    margin-left: -10px
 
 html, body
   width: 100%
@@ -116,29 +146,49 @@ h2
         float: left
         width: 25%
         height: 100%
-        background-image: url(../img/header/siliconvalley.jpg)
+        background-image: image-url("header/siliconvalley.jpg")
         background-size: cover
 
       .item-2
         float: left
         width: 25%
         height: 100%
-        background-image: url(../img/header/breakingbad.jpg)
+        background-image: image-url("header/breakingbad.jpg")
         background-size: cover
 
       .item-3
         float: left
         width: 25%
         height: 100%
-        background-image: url(../img/header/dexter.jpg)
+        background-image: image-url("header/dexter.jpg")
         background-size: cover
         
       .item-4
         float: left
         width: 25%
         height: 100%
-        background-image: url(../img/header/gameofthrones.jpg)
+        background-image: image-url("header/gameofthrones.jpg")
         background-size: cover
+        background-position: 0 -160px
+
+#mode
+  position: absolute
+  top: 20px
+  right: 20px
+  z-index: 9000
+  background-color: rgba(0,0,0,.3)
+  font-weight: 600
+  padding: 0 20px
+  margin: 0
+  line-height: 50px
+  border-radius: 6px
+  color: #fff
+  display: none
+  font-size: 20px
+  border: 2px solid black
+
+  span
+    color: lime
 
 #list
   width: 100%
@@ -159,73 +209,92 @@ h2
   float: left
   margin-right: 10px
   border: 2px solid #000
+  position: relative
   &.active
     border-color: red
 
   &.siliconvalley
-    background-image: url(../img/poster/siliconvalley.jpg)
+    background-image: image-url("poster/siliconvalley.jpg")
     background-size: cover
+    &:after
+      content: ""
+      position: absolute
+      left: 4px
+      bottom: 4px
+      background-color: red
+      height: 2px
+      width: 60px
+
   &.breakingbad
-    background-image: url(../img/poster/breakingbad.jpg)
+    background-image: image-url("poster/breakingbad.jpg")
     background-size: cover
   &.dexter
-    background-image: url(../img/poster/dexter.jpg)
+    background-image: image-url("poster/dexter.jpg")
     background-size: cover
   &.gameofthrones
-    background-image: url(../img/poster/gameofthrones.jpg)
+    background-image: image-url("poster/gameofthrones.jpg")
     background-size: cover
-  &.agentsofschield
-    background-image: url(../img/poster/agentsofschield.jpg)
+  &.agentsofshield
+    background-image: image-url("poster/agentsofshield.jpg")
     background-size: cover
+    &:after
+      content: ""
+      position: absolute
+      left: 4px
+      bottom: 4px
+      background-color: red
+      height: 2px
+      width: 20px
+
   &.arrow
-    background-image: url(../img/poster/arrow.jpg)
+    background-image: image-url("poster/arrow.jpg")
     background-size: cover
   &.blacksails
-    background-image: url(../img/poster/blacksails.jpg)
+    background-image: image-url("poster/blacksails.jpg")
     background-size: cover
   &.sherlock
-    background-image: url(../img/poster/sherlock.jpg)
+    background-image: image-url("poster/sherlock.jpg")
     background-size: cover
   &.cosmos
-    background-image: url(../img/poster/cosmos.jpg)
+    background-image: image-url("poster/cosmos.jpg")
     background-size: cover
   &.lost
-    background-image: url(../img/poster/lost.jpg)
+    background-image: image-url("poster/lost.jpg")
     background-size: cover
   &.house
-    background-image: url(../img/poster/house.jpg)
+    background-image: image-url("poster/house.jpg")
     background-size: cover
 
   &.houseofcards
-    background-image: url(../img/poster/houseofcards.jpg)
+    background-image: image-url("poster/houseofcards.jpg")
     background-size: cover
   &.madmen
-    background-image: url(../img/poster/madmen.jpg)
+    background-image: image-url("poster/madmen.jpg")
     background-size: cover
   &.haltandcatchfire
-    background-image: url(../img/poster/haltandcatchfire.jpg)
+    background-image: image-url("poster/haltandcatchfire.jpg")
     background-size: cover
   &.flash
-    background-image: url(../img/poster/flash.jpg)
+    background-image: image-url("poster/flash.jpg")
     background-size: cover
   &.sonsofanarchy
-    background-image: url(../img/poster/sonsofanarchy.jpg)
+    background-image: image-url("poster/sonsofanarchy.jpg")
     background-size: cover
   &.doctorwho
-    background-image: url(../img/poster/doctorwho.jpg)
+    background-image: image-url("poster/doctorwho.jpg")
     background-size: cover
   &.thewalkingdead
-    background-image: url(../img/poster/thewalkingdead.jpg)
+    background-image: image-url("poster/thewalkingdead.jpg")
     background-size: cover
   &.thebigbangtheory
-    background-image: url(../img/poster/thebigbangtheory.jpg)
+    background-image: image-url("poster/thebigbangtheory.jpg")
     background-size: cover
   &.scrubs
-    background-image: url(../img/poster/scrubs.jpg)
+    background-image: image-url("poster/scrubs.jpg")
     background-size: cover
   &.modernfamily
-    background-image: url(../img/poster/modernfamily.jpg)
+    background-image: image-url("poster/modernfamily.jpg")
     background-size: cover
   &.hannibal
-    background-image: url(../img/poster/hannibal.jpg)
+    background-image: image-url("poster/hannibal.jpg")
     background-size: cover
