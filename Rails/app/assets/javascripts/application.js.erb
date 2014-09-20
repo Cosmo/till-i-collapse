@@ -16,9 +16,18 @@
 //= require_tree .
 
 function collapsed() {
+  // alert(data.message);
+  $("#video")[0].pause();
+  $("body").css({ backgroundColor: "#FF0000" });
+  
   var audio = new Audio('/boom.mp3');
   audio.load();
   audio.play();
+}
+
+function awake() {
+  $("#video")[0].play();
+  $("body").css({ backgroundColor: "#00FF00" });
 }
 
 $(function(){
@@ -31,6 +40,11 @@ $(function(){
   
   $("#collapse").on("click", function(event){
     collapsed();
+    event.preventDefault();
+  });
+
+  $("#awake").on("click", function(event){
+    awake();
     event.preventDefault();
   });
 
@@ -54,10 +68,11 @@ $(function(){
   var pusher = new Pusher('<%= Rails.application.secrets.pusher_secret %>');
   var channel = pusher.subscribe('collapse');
   channel.bind('collapsed', function(data) {
-    // alert(data.message);
-    $("#video")[0].pause();
-    $("body").css({ backgroundColor: "#FF0000" });
     collapsed();
+  });
+  
+  channel.bind('awake', function(data) {
+    awake();
   });
   
   $("#mode")
