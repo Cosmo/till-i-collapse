@@ -63,3 +63,91 @@ $(function(){
   $("#mode")
   
 });
+
+
+
+
+
+
+
+$(document).ready(function(){
+
+  $(document).keydown(function (e){
+    if(e.keyCode === 39) { // right
+      if ($(".list-item.siliconvalley").hasClass("active")) {
+        $(".list-item.siliconvalley").removeClass("active");
+        $(".list-item.breakingbad").addClass("active");
+
+        $("#meta .wrapper").removeClass("");
+        $("#meta .wrapper").addClass("breakingbad");
+
+        $("#poster-image .wrapper").removeClass("");
+        $("#poster-image .wrapper").addClass("breakingbad");
+      }
+      else if ($(".list-item.breakingbad").hasClass("active")) {
+        $(".list-item.breakingbad").removeClass("active");
+        $(".list-item.dexter").addClass("active");
+
+        $("#meta .wrapper").removeClass("");
+        $("#meta .wrapper").addClass("dexter");
+
+        $("#poster-image .wrapper").removeClass("");
+        $("#poster-image .wrapper").addClass("dexter");
+      }
+      else if ($(".list-item.dexter").hasClass("active")) {
+        $(".list-item.dexter").removeClass("active");
+        $(".list-item.gameofthrones").addClass("active");
+
+        $("#meta .wrapper").removeClass("");
+        $("#meta .wrapper").addClass("gameofthrones");
+
+        $("#poster-image .wrapper").removeClass("");
+        $("#poster-image .wrapper").addClass("gameofthrones");
+      }
+    }
+
+    if(e.keyCode === 37) { // left
+      if ($(".list-item.gameofthrones").hasClass("active")) {
+        $(".list-item.gameofthrones").removeClass("active");
+        $(".list-item.dexter").addClass("active");
+
+        $("#meta .wrapper").removeClass("");
+        $("#meta .wrapper").addClass("dexter");
+
+        $("#poster-image .wrapper").removeClass("");
+        $("#poster-image .wrapper").addClass("dexter");
+      }
+      else if ($(".list-item.dexter").hasClass("active")) {
+        $(".list-item.dexter").removeClass("active");
+        $(".list-item.breakingbad").addClass("active");
+
+        $("#meta .wrapper").removeClass("");
+        $("#meta .wrapper").addClass("breakingbad");
+
+        $("#poster-image .wrapper").removeClass("");
+        $("#poster-image .wrapper").addClass("breakingbad");
+      }
+      else if ($(".list-item.breakingbad").hasClass("active")) {
+        $(".list-item.breakingbad").removeClass("active");
+        $(".list-item.siliconvalley").addClass("active");
+
+        $("#meta .wrapper").removeClass("");
+        $("#meta .wrapper").addClass("siliconvalley");
+
+        $("#poster-image .wrapper").removeClass("");
+        $("#poster-image .wrapper").addClass("siliconvalley");
+      }
+    }
+
+    if(e.keyCode === 13) { // enter
+      if ($(".list-item.siliconvalley").hasClass("active")) {
+        if ($("#poster").hasClass("active")) {
+          $("#poster").removeClass("active");
+        } else {
+          $("#poster").addClass("active");
+        }
+      }
+    }
+  });
+
+});
