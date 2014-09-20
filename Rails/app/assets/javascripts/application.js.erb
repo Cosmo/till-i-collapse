@@ -163,6 +163,14 @@ $(document).ready(function(){
         }
       }
     }
+
+    if(e.keyCode === 77) { // enter
+      if ($("#mode").is(":visible")) {
+          $("#mode").hide();
+        } else {
+          $("#mode").show();
+        }  
+    }
   });
 
 });
