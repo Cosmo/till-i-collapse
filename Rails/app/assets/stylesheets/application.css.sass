@@ -14,6 +14,8 @@
  *= require_self
  */
 
+@import "font-awesome-sprockets"
+@import "font-awesome"
 
 #video-wrapper
   position: absolute
@@ -190,12 +192,22 @@ h2
   float: left
   margin-right: 10px
   border: 2px solid #000
+  position: relative
   &.active
     border-color: red
 
   &.siliconvalley
     background-image: image-url("poster/siliconvalley.jpg")
     background-size: cover
+    &:after
+      content: ""
+      position: absolute
+      left: 4px
+      bottom: 4px
+      background-color: red
+      height: 2px
+      width: 60px
+
   &.breakingbad
     background-image: image-url("poster/breakingbad.jpg")
     background-size: cover
@@ -208,6 +220,15 @@ h2
   &.agentsofshield
     background-image: image-url("poster/agentsofshield.jpg")
     background-size: cover
+    &:after
+      content: ""
+      position: absolute
+      left: 4px
+      bottom: 4px
+      background-color: red
+      height: 2px
+      width: 20px
+
   &.arrow
     background-image: image-url("poster/arrow.jpg")
     background-size: cover
