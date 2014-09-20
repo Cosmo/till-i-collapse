@@ -102,6 +102,9 @@ $(function(){
       previous.addClass("active");
     }
     
+    if(e.keyCode === 39 || e.keyCode === 37) {
+      $("#poster .wrapper").attr("class", "wrapper " + $(".recently .list-item.active").data("item-name"));
+    }
     
     
     
