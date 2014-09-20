@@ -18,7 +18,7 @@
 function collapsed() {
   // alert(data.message);
   $("#video")[0].pause();
-  $("body").css({ backgroundColor: "#FF0000" });
+  // $("body").css({ backgroundColor: "#FF0000" });
   $("#video")[0].currentTime = $("#video")[0].currentTime - 10;
   
   var audio = new Audio('/boom.mp3');
@@ -28,7 +28,7 @@ function collapsed() {
 
 function awake() {
   $("#video")[0].play();
-  $("body").css({ backgroundColor: "#00FF00" });
+  // $("body").css({ backgroundColor: "#00FF00" });
 }
 
 $(function(){
