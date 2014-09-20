@@ -182,21 +182,21 @@ namespace Microsoft.Samples.Kinect.FaceBasics
                             var eyesClosedFiveSecs = totalCountOfClosedEyes > 300;
                             var lookedAwayFiveSecs = totalCountOfLookAways > 190;
 
-                            var eyesOpenFiveSecs = totalCountOfClosedEyes < 200;
+                            var eyesOpenFiveSecs = totalCountOfClosedEyes < 300;
                             var lookedFiveSecs = totalCountOfLookAways < 50;
 
                             Debug.WriteLine("totalCountOfSignals => " + totalCountOfSignals +
                                 " [LookAways => " + eyesOpenFiveSecs + " / " + 
                                 "ClosedEyes => " + totalCountOfClosedEyes + "]");
 
-                            if (!this.sleeping && eyesClosedFiveSecs || lookedAwayFiveSecs)
+                            if (!this.sleeping && eyesClosedFiveSecs) // && lookedAwayFiveSecs)
                             {
                                 var pusher = new Pusher(PusherCredentials.AppId, PusherCredentials.AppKey, PusherCredentials.AppSecret);
                                 var result = pusher.Trigger("collapse", "collapsed", null);
 
                                 this.sleeping = true;
                             }
-                            else if (this.sleeping && (!eyesOpenFiveSecs || !lookedFiveSecs))
+                            else if (this.sleeping && (eyesOpenFiveSecs || lookedFiveSecs))
                             {
                                 var pusher = new Pusher(PusherCredentials.AppId, PusherCredentials.AppKey, PusherCredentials.AppSecret);
                                 var result = pusher.Trigger("collapse", "awake", null);
