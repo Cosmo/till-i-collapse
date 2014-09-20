@@ -1,0 +1,65 @@
+// This is a manifest file that'll be compiled into application.js, which will include all the files
+// listed below.
+//
+// Any JavaScript/Coffee file within this directory, lib/assets/javascripts, vendor/assets/javascripts,
+// or vendor/assets/javascripts of plugins, if any, can be referenced here using a relative path.
+//
+// It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
+// compiled file.
+//
+// Read Sprockets README (https://github.com/sstephenson/sprockets#sprockets-directives) for details
+// about supported directives.
+//
+//= require jquery
+//= require jquery_ujs
+//= require turbolinks
+//= require_tree .
+
+function collapsed() {
+  var audio = new Audio('/boom.mp3');
+  audio.load();
+  audio.play();
+}
+
+$(function(){
+  $("#video")[0].play();
+  
+  $("#play").on("click", function(event){
+    $("#video")[0].play();
+    event.preventDefault();
+  });
+  
+  $("#collapse").on("click", function(event){
+    collapsed();
+    event.preventDefault();
+  });
+
+  $("#videos li a").on("click", function(event){
+    $("#video").attr("src", $(this).data("video-url"));
+    $("#video")[0].src = $(this).data("video-url");
+    $("#video")[0].load();
+    $("#video")[0].play();
+    event.preventDefault();
+  });
+  
+  
+  
+  
+  Pusher.log = function(message) {
+    if (window.console && window.console.log) {
+      window.console.log(message);
+    }
+  };
+
+  var pusher = new Pusher('<%= Rails.application.secrets.pusher_secret %>');
+  var channel = pusher.subscribe('collapse');
+  channel.bind('collapsed', function(data) {
+    // alert(data.message);
+    $("#video")[0].pause();
+    $("body").css({ backgroundColor: "#FF0000" });
+    collapsed();
+  });
+  
+  $("#mode")
+  
+});
