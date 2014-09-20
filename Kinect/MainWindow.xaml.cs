@@ -12,7 +12,6 @@ namespace Microsoft.Samples.Kinect.FaceBasics
     using System.Diagnostics;
     using System.Globalization;
     using System.Linq;
-    using System.Media;
     using System.Reactive.Linq;
     using System.Reactive.Subjects;
     using System.Windows;
@@ -156,6 +155,8 @@ namespace Microsoft.Samples.Kinect.FaceBasics
 
         private IDisposable signalsSubscription;
 
+        private bool sleeping = false;
+
         /// <summary>
         /// Initializes a new instance of the MainWindow class.
         /// </summary>
@@ -181,22 +182,26 @@ namespace Microsoft.Samples.Kinect.FaceBasics
                             var eyesClosedFiveSecs = totalCountOfClosedEyes > 300;
                             var lookedAwayFiveSecs = totalCountOfLookAways > 190;
 
-                            Debug.WriteLine("totalCountOfSignals => " + totalCountOfSignals + 
-                                " [LookAways => " + totalCountOfLookAways + " / " + 
+                            var eyesOpenFiveSecs = totalCountOfClosedEyes < 200;
+                            var lookedFiveSecs = totalCountOfLookAways < 50;
+
+                            Debug.WriteLine("totalCountOfSignals => " + totalCountOfSignals +
+                                " [LookAways => " + eyesOpenFiveSecs + " / " + 
                                 "ClosedEyes => " + totalCountOfClosedEyes + "]");
 
-                            if (eyesClosedFiveSecs || lookedAwayFiveSecs)
+                            if (!this.sleeping && eyesClosedFiveSecs || lookedAwayFiveSecs)
                             {
-                                //var soundLocation = AppDomain.CurrentDomain.BaseDirectory + @"Sounds\Rifle Shot Echo.wav";
-                                //var player = new SoundPlayer(soundLocation);
-                                //player.Play();
+                                var pusher = new Pusher(PusherCredentials.AppId, PusherCredentials.AppKey, PusherCredentials.AppSecret);
+                                var result = pusher.Trigger("collapse", "collapsed", null);
 
-                                var pusher = new Pusher(
-                                    PusherCredentials.AppId,
-                                    PusherCredentials.AppKey, 
-                                    PusherCredentials.AppSecret);
+                                this.sleeping = true;
+                            }
+                            else if (this.sleeping && (!eyesOpenFiveSecs || !lookedFiveSecs))
+                            {
+                                var pusher = new Pusher(PusherCredentials.AppId, PusherCredentials.AppKey, PusherCredentials.AppSecret);
+                                var result = pusher.Trigger("collapse", "awake", null);
 
-                                var result = pusher.Trigger("collapse", "collapsed", new { message = "hello world" });
+                                this.sleeping = false;
                             }
                         });
 
