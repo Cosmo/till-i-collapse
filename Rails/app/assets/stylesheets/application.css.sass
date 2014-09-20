@@ -103,7 +103,8 @@ h2
         top: 0
         left: 0
         -webkit-transition-property: left
-        -webkit-transition-duration: 0.4s
+        -webkit-transition-duration: 0.2s
+        transition-timing-function: ease-in-out
         &.breakingbad
           left: -600px
         &.dexter
@@ -146,7 +147,8 @@ h2
       top: 0
       left: 0
       -webkit-transition-property: left
-      -webkit-transition-duration: 0.4s
+      -webkit-transition-duration: 0.6s
+      transition-timing-function: ease
       &.breakingbad
         left: -100%
       &.dexter
@@ -303,15 +305,6 @@ h2
   &.agentsofshield
     background-image: image-url("poster/agentsofshield.jpg")
     background-size: cover
-    &:after
-      content: ""
-      position: absolute
-      left: 4px
-      bottom: 4px
-      background-color: red
-      height: 2px
-      width: 20px
-
   &.arrow
     background-image: image-url("poster/arrow.jpg")
     background-size: cover
@@ -334,6 +327,14 @@ h2
   &.houseofcards
     background-image: image-url("poster/houseofcards.jpg")
     background-size: cover
+    &:after
+      content: ""
+      position: absolute
+      left: 4px
+      bottom: 4px
+      background-color: red
+      height: 2px
+      width: 20px
   &.madmen
     background-image: image-url("poster/madmen.jpg")
     background-size: cover

@@ -81,6 +81,16 @@ $(function(){
   
   $(document).keydown(function (e){
     if(e.keyCode === 13) {
+      var active = $(".recently .list-item.active");
+      $("#video")[0].src = active.data("video-source");
+      $("#video")[0].load();
+      
+      $("#video").on("loadeddata", function(){
+        $("#video")[0].currentTime = active.data("video-time");
+      });
+      
+      // $("#video")[0].currentTime = active.data("video-time");
+      
       $("#video-wrapper").fadeIn();
       $("#video")[0].play();
     }
