@@ -15,29 +15,84 @@
 //= require turbolinks
 //= require_tree .
 
+
 function collapsed() {
-  $("#video")[0].pause();
-  $("#video")[0].currentTime = $("#video")[0].currentTime - 10;
+  if($("#video-wrapper").hasClass("active")) {
+    $("#video")[0].pause();
+    $("#video")[0].currentTime = $("#video")[0].currentTime - 10;
   
-  $("#backward").addClass("active");
-  setTimeout(function(){
-    $("#backward").removeClass("active");
-  }, 3000);
+    $("#backward").addClass("active");
+    setTimeout(function(){
+      $("#backward").removeClass("active");
+    }, 3000);
   
-  if($("#mode").hasClass("active")) {
-    var audio = new Audio('/boom.mp3');
-    audio.load();
-    audio.play();
+    if($("#mode").hasClass("active")) {
+      var audio = new Audio('/boom.mp3');
+      audio.load();
+      audio.play();
+    }
   }
 }
 
 function awake() {
-  if($("#mode").hasClass("active")) {
+  // if($("#mode").hasClass("active")) {
+  if($("#video-wrapper").hasClass("active")) {
     $("#video")[0].play();
+  }
+  // }
+}
+
+function showStuff() {
+  if($("#video-wrapper").hasClass("active")) {
+    $("#video-wrapper").removeClass("active");
+    $("#video")[0].pause();
   }
 }
 
+function watchSiliconValley() {
+  $(".recently .list-item.active").removeClass("active");
+  item = $(".recently .list-item.siliconvalley");
+  item.addClass("active");
+  
+  watchThis();
+}
+
+function watchHouseOfCards() {
+  $(".recently .list-item.active").removeClass("active");
+  item = $(".recently .list-item.houseofcards");
+  item.addClass("active");
+  
+  watchThis();
+}
+
+function watchThis() {
+  var active = $(".recently .list-item.active");
+  $("#video")[0].src = active.data("video-source");
+  $("#video")[0].load();
+  
+  $("#video").hide();
+  
+  $("#video").on("loadeddata", function(){
+    $("#video").fadeIn();
+    $("#video")[0].currentTime = active.data("video-time");
+    $("#video-wrapper").attr("class", "active");
+  });
+  
+  // $("#video-wrapper").fadeIn();
+  $("#video-wrapper").addClass("active");
+  $("#video")[0].play();
+}
+
 $(function(){
+  
+  Pusher.log = function(message) {
+    if (window.console && window.console.log) {
+      window.console.log(message);
+    }
+  };
+  
+  var pusher = new Pusher('<%= Rails.application.secrets.pusher_secret %>');
+  var channel = pusher.subscribe('collapse');
   
   $("#play").on("click", function(event){
     $("#video")[0].play();
@@ -65,14 +120,6 @@ $(function(){
   
   
   
-  Pusher.log = function(message) {
-    if (window.console && window.console.log) {
-      window.console.log(message);
-    }
-  };
-
-  var pusher = new Pusher('<%= Rails.application.secrets.pusher_secret %>');
-  var channel = pusher.subscribe('collapse');
   channel.bind('collapsed', function(data) {
     collapsed();
   });
@@ -81,29 +128,36 @@ $(function(){
     awake();
   });
   
+  channel.bind('tillicollapsedon', function(data) {
+    $("#mode").addClass("active");
+  });
   
+  channel.bind('iamtired', function(data) {
+    $("#mode").removeClass("active");
+  });
+  
+  channel.bind('showmystuff', function(data) {
+    showStuff();
+  });
+  
+  channel.bind('watchsiliconvalley', function(data) {
+    watchSiliconValley();
+  });
+  
+  channel.bind('watchhouseofcards', function(data) {
+    watchHouseOfCards();
+  });
   
   
   
   $(document).keydown(function (e){
     if(e.keyCode === 13) {
       // return
-      var active = $(".recently .list-item.active");
-      $("#video")[0].src = active.data("video-source");
-      $("#video")[0].load();
-      
-      $("#video").on("loadeddata", function(){
-        $("#video")[0].currentTime = active.data("video-time");
-      });
-      
-      // $("#video-wrapper").fadeIn();
-      $("#video-wrapper").addClass("active");
-      $("#video")[0].play();
+      watchThis();
     }
     if(e.keyCode === 27) {
       // esc
-      $("#video-wrapper").removeClass("active");
-      $("#video")[0].pause();
+      showStuff();
     }
     
     if(e.keyCode === 39) { // right
@@ -121,9 +175,8 @@ $(function(){
     
     if(e.keyCode === 39 || e.keyCode === 37) {
       $("#poster .wrapper").attr("class", "wrapper " + $(".recently .list-item.active").data("item-name"));
+      $("#video-wrapper").attr("class", $(".recently .list-item.active").data("item-name"));
     }
-    
-    
     
     if(e.keyCode === 77) { // enter
       $("#mode").toggleClass("active");

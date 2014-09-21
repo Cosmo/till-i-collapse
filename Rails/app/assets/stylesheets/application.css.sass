@@ -233,6 +233,7 @@ h2
         height: 100%
         background-image: image-url("header/houseofcards.jpg")
         background-size: cover
+        background-position: center top
 
       .item-8
         float: left
@@ -393,6 +394,11 @@ h2
     background-size: cover
 
 #video-wrapper
-  background-image: image-url("header/houseofcards.jpg")
   background-size: cover
   background-position: center top
+  &.houseofcards
+    background-image: image-url("header/houseofcards.jpg")
+  &.siliconvalley
+    background-image: image-url("header/siliconvalley.jpg")
+  video
+    padding-top: 5%
