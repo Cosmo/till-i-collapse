@@ -16,9 +16,7 @@
 //= require_tree .
 
 function collapsed() {
-  // alert(data.message);
   $("#video")[0].pause();
-  // $("body").css({ backgroundColor: "#FF0000" });
   $("#video")[0].currentTime = $("#video")[0].currentTime - 10;
   
   $("#backward").addClass("active");
@@ -26,15 +24,17 @@ function collapsed() {
     $("#backward").removeClass("active");
   }, 3000);
   
-  
-  var audio = new Audio('/boom.mp3');
-  audio.load();
-  audio.play();
+  if($("#mode").hasClass("active")) {
+    var audio = new Audio('/boom.mp3');
+    audio.load();
+    audio.play();
+  }
 }
 
 function awake() {
-  $("#video")[0].play();
-  // $("body").css({ backgroundColor: "#00FF00" });
+  if($("#mode").hasClass("active")) {
+    $("#video")[0].play();
+  }
 }
 
 $(function(){
@@ -87,6 +87,7 @@ $(function(){
   
   $(document).keydown(function (e){
     if(e.keyCode === 13) {
+      // return
       var active = $(".recently .list-item.active");
       $("#video")[0].src = active.data("video-source");
       $("#video")[0].load();
@@ -95,13 +96,13 @@ $(function(){
         $("#video")[0].currentTime = active.data("video-time");
       });
       
-      // $("#video")[0].currentTime = active.data("video-time");
-      
-      $("#video-wrapper").fadeIn();
+      // $("#video-wrapper").fadeIn();
+      $("#video-wrapper").addClass("active");
       $("#video")[0].play();
     }
     if(e.keyCode === 27) {
-      $("#video-wrapper").fadeOut();
+      // esc
+      $("#video-wrapper").removeClass("active");
       $("#video")[0].pause();
     }
     
@@ -125,14 +126,7 @@ $(function(){
     
     
     if(e.keyCode === 77) { // enter
-      
       $("#mode").toggleClass("active");
-      
-      // if ($("#mode").is(":visible")) {
-      //     $("#mode").hide();
-      //   } else {
-      //     $("#mode").show();
-      //   }  
     }
   });
 
