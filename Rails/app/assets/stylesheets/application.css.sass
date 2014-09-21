@@ -290,6 +290,7 @@ h2
 
   h2
     color: #555
+    color: #FFF
 
   .list
     width: 300%
@@ -402,16 +403,16 @@ h2
     background-image: image-url("header/siliconvalley.jpg")
   video
     padding-top: 5%
-
-#loading-overlay
-  position: absolute
-  z-index: 9999
-  top: 0
-  left: 0
-  right: 0
-  bottom: 0
-  background-color: rgba(0,0,0,.7)
-
+  
+  #shade-overlay
+    position: absolute
+    z-index: 9999
+    top: 0
+    left: 0
+    right: 0
+    bottom: 0
+    background-color: rgba(0,0,0,.7)
+  
   #spinner
     width: 60px
     height: 60px
@@ -422,21 +423,13 @@ h2
     margin-top: -30px
     background-image: url("site-spinner.png")
     background-size: cover
-    -webkit-animation: loading 2s linear infinite
-
-    =keyframes($name)
-      @-webkit-keyframes #{$name}
-        @content
-      @-moz-keyframes #{$name}
-        @content
-      @-ms-keyframes #{$name}
-        @content
-      @keyframes #{$name}
-        @content
-  
-    +keyframes(loading)
-      0%
-        transform: rotate(0deg)
-      100%
-        transform: rotate(360deg)
-
+    -webkit-animation: spin 0.5s linear infinite
+    z-index: 9999
+    
+  video
+    position: absolute
+    z-index: 9999
+    top: 0
+    left: 0
+    right: 0
+    bottom: 0

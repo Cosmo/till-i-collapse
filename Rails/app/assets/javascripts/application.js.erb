@@ -16,6 +16,12 @@
 //= require_tree .
 
 
+var boom = new Audio('/boom.mp3');
+boom.load();
+
+var toggleSound = new Audio('/toggle.mp3');
+toggleSound.load();
+
 function collapsed() {
   if($("#video-wrapper").hasClass("active")) {
     $("#video")[0].pause();
@@ -27,11 +33,17 @@ function collapsed() {
     }, 3000);
   
     if($("#mode").hasClass("active")) {
-      var audio = new Audio('/boom.mp3');
-      audio.load();
-      audio.play();
+      playBoomSound();
     }
   }
+}
+
+function playBoomSound() {
+  boom.play();
+}
+
+function playToggleSound() {
+  toggleSound.play();
 }
 
 function awake() {
@@ -178,7 +190,8 @@ $(function(){
       $("#video-wrapper").attr("class", $(".recently .list-item.active").data("item-name"));
     }
     
-    if(e.keyCode === 77) { // enter
+    if(e.keyCode === 77) {
+      playToggleSound();
       $("#mode").toggleClass("active");
     }
   });
