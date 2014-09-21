@@ -40,8 +40,13 @@
   background-color: rgba(0,0,0,.6)
   z-index: 9999
   text-align: center
-  display: none
-
+  -webkit-transform: scale(2.0)
+  -webkit-transition: all 0.5s ease-in-out
+  pointer-events: none
+  opacity: 0.0
+  &.active
+    -webkit-transform: scale(1.0)
+    opacity: 1.0
   .fa
     margin-top: 60px
     margin-left: -10px
@@ -129,7 +134,8 @@ h2
           float: left
 
       .fa-star.primary
-        color: red
+        color: #F00
+        color: #EA060E
 
   #poster-image
     width: 100%
@@ -240,7 +246,7 @@ h2
         background-size: cover
 
 #mode
-  position: absolute
+  position: fixed
   top: 20px
   right: 20px
   z-index: 9000
@@ -251,9 +257,18 @@ h2
   line-height: 50px
   border-radius: 6px
   color: #fff
-  display: none
   font-size: 20px
   border: 2px solid black
+  
+  -webkit-transform: scale(2.5)
+  -webkit-transition: all 0.25s ease-in-out
+  pointer-events: none
+  opacity: 0.0
+  &.active
+    -webkit-transform: scale(1.0)
+    opacity: 1.0
+  
+  
 
   span
     color: lime
@@ -266,7 +281,7 @@ h2
 
   .list
     width: 300%
-    height: 204px
+    height: 212px
     overflow: hidden
     float: left
     margin-bottom: 40px
@@ -276,10 +291,11 @@ h2
   height: 200px
   float: left
   margin-right: 10px
-  border: 2px solid #000
+  border: 6px solid #000
   position: relative
   &.active
     border-color: red
+    border-color: #EA060E
 
   &.siliconvalley
     background-image: image-url("poster/siliconvalley.jpg")
@@ -290,6 +306,7 @@ h2
       left: 4px
       bottom: 4px
       background-color: red
+      background-color: #EA060E
       height: 2px
       width: 60px
 
@@ -333,6 +350,7 @@ h2
       left: 4px
       bottom: 4px
       background-color: red
+      background-color: #EA060E
       height: 2px
       width: 20px
   &.madmen

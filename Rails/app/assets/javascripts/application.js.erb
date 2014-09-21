@@ -21,6 +21,12 @@ function collapsed() {
   // $("body").css({ backgroundColor: "#FF0000" });
   $("#video")[0].currentTime = $("#video")[0].currentTime - 10;
   
+  $("#backward").addClass("active");
+  setTimeout(function(){
+    $("#backward").removeClass("active");
+  }, 3000);
+  
+  
   var audio = new Audio('/boom.mp3');
   audio.load();
   audio.play();
@@ -119,11 +125,14 @@ $(function(){
     
     
     if(e.keyCode === 77) { // enter
-      if ($("#mode").is(":visible")) {
-          $("#mode").hide();
-        } else {
-          $("#mode").show();
-        }  
+      
+      $("#mode").toggleClass("active");
+      
+      // if ($("#mode").is(":visible")) {
+      //     $("#mode").hide();
+      //   } else {
+      //     $("#mode").show();
+      //   }  
     }
   });
 
