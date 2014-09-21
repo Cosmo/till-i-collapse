@@ -11,13 +11,19 @@ namespace Microsoft.Samples.Kinect.FaceBasics
     using System.ComponentModel;
     using System.Diagnostics;
     using System.Globalization;
+    using System.IO;
     using System.Linq;
     using System.Reactive.Linq;
     using System.Reactive.Subjects;
+    using System.Text;
     using System.Windows;
     using System.Windows.Media;
+
     using Microsoft.Kinect;
     using Microsoft.Kinect.Face;
+    using Microsoft.Samples.Kinect.SpeechBasics;
+    using Microsoft.Speech.AudioFormat;
+    using Microsoft.Speech.Recognition;
 
     using PusherServer;
 
@@ -151,9 +157,23 @@ namespace Microsoft.Samples.Kinect.FaceBasics
 
         #endregion
 
-        private Subject<KeyValuePair<FaceProperty, DetectionResult>> signals = new Subject<KeyValuePair<FaceProperty, DetectionResult>>();
+        /// <summary>
+        /// Stream for 32b-16b conversion.
+        /// </summary>
+        private KinectAudioStream convertStream = null;
 
-        private IDisposable signalsSubscription;
+        /// <summary>
+        /// Speech recognition engine using audio data from Kinect.
+        /// </summary>
+        private SpeechRecognitionEngine speechEngine = null;
+
+        private Subject<KeyValuePair<FaceProperty, DetectionResult>> faceSignals = new Subject<KeyValuePair<FaceProperty, DetectionResult>>();
+
+        private Subject<HandState> handSignals = new Subject<HandState>();
+
+        private IDisposable faceSignalsSubscription;
+
+        private IDisposable handSignalsSubscription;
 
         private bool sleeping = false;
 
@@ -162,7 +182,7 @@ namespace Microsoft.Samples.Kinect.FaceBasics
         /// </summary>
         public MainWindow()
         {
-            this.signalsSubscription = this.signals
+            this.faceSignalsSubscription = this.faceSignals
                 .Buffer(TimeSpan.FromSeconds(5))
                 .Subscribe(
                     list =>
@@ -185,22 +205,18 @@ namespace Microsoft.Samples.Kinect.FaceBasics
                             var eyesOpenFiveSecs = totalCountOfClosedEyes < 300;
                             var lookedFiveSecs = totalCountOfLookAways < 50;
 
-                            Debug.WriteLine("totalCountOfSignals => " + totalCountOfSignals +
-                                " [LookAways => " + eyesOpenFiveSecs + " / " + 
-                                "ClosedEyes => " + totalCountOfClosedEyes + "]");
+                            //Debug.WriteLine("totalCountOfSignals => " + totalCountOfSignals +
+                            //    " [LookAways => " + eyesOpenFiveSecs + " / " + 
+                            //    "ClosedEyes => " + totalCountOfClosedEyes + "]");
 
                             if (!this.sleeping && eyesClosedFiveSecs) // && lookedAwayFiveSecs)
                             {
-                                var pusher = new Pusher(PusherCredentials.AppId, PusherCredentials.AppKey, PusherCredentials.AppSecret);
-                                var result = pusher.Trigger("collapse", "collapsed", null);
-
+                                this.PushEventToUserInterface("collapsed");
                                 this.sleeping = true;
                             }
                             else if (this.sleeping && (eyesOpenFiveSecs || lookedFiveSecs))
                             {
-                                var pusher = new Pusher(PusherCredentials.AppId, PusherCredentials.AppKey, PusherCredentials.AppSecret);
-                                var result = pusher.Trigger("collapse", "awake", null);
-
+                                this.PushEventToUserInterface("awake");
                                 this.sleeping = false;
                             }
                         });
@@ -364,12 +380,108 @@ namespace Microsoft.Samples.Kinect.FaceBasics
         }
 
         /// <summary>
+        /// Gets the metadata for the speech recognizer (acoustic model) most suitable to
+        /// process audio from Kinect device.
+        /// </summary>
+        /// <returns>
+        /// RecognizerInfo if found, <code>null</code> otherwise.
+        /// </returns>
+        private static RecognizerInfo GetKinectRecognizer()
+        {
+            foreach (RecognizerInfo recognizer in SpeechRecognitionEngine.InstalledRecognizers())
+            {
+                string value;
+                recognizer.AdditionalInfo.TryGetValue("Kinect", out value);
+                if ("True".Equals(value, StringComparison.OrdinalIgnoreCase) && "en-US".Equals(recognizer.Culture.Name, StringComparison.OrdinalIgnoreCase))
+                {
+                    return recognizer;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
         /// Execute start up tasks
         /// </summary>
         /// <param name="sender">object sending the event</param>
         /// <param name="e">event arguments</param>
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            // Onle one sensor is supported
+            this.kinectSensor = KinectSensor.GetDefault();
+
+            if (this.kinectSensor != null)
+            {
+                // open the sensor
+                this.kinectSensor.Open();
+
+                // grab the audio stream
+                var audioBeamList = this.kinectSensor.AudioSource.AudioBeams;
+                var audioStream = audioBeamList[0].OpenInputStream();
+
+                // create the convert stream
+                this.convertStream = new KinectAudioStream(audioStream);
+            }
+            else
+            {
+                return;
+            }
+
+            RecognizerInfo ri = GetKinectRecognizer();
+
+            if (null != ri)
+            {
+                this.speechEngine = new SpeechRecognitionEngine(ri.Id);
+
+                /****************************************************************
+                * 
+                * Use this code to create grammar programmatically rather than from
+                * a grammar file.
+                * 
+                * var directions = new Choices();
+                * directions.Add(new SemanticResultValue("forward", "FORWARD"));
+                * directions.Add(new SemanticResultValue("forwards", "FORWARD"));
+                * directions.Add(new SemanticResultValue("straight", "FORWARD"));
+                * directions.Add(new SemanticResultValue("backward", "BACKWARD"));
+                * directions.Add(new SemanticResultValue("backwards", "BACKWARD"));
+                * directions.Add(new SemanticResultValue("back", "BACKWARD"));
+                * directions.Add(new SemanticResultValue("turn left", "LEFT"));
+                * directions.Add(new SemanticResultValue("turn right", "RIGHT"));
+                *
+                * var gb = new GrammarBuilder { Culture = ri.Culture };
+                * gb.Append(directions);
+                *
+                * var g = new Grammar(gb);
+                * 
+                ****************************************************************/
+
+                // Create a grammar from grammar definition XML file.
+                using (var memoryStream = new MemoryStream(Encoding.ASCII.GetBytes(Properties.Resources.SpeechGrammar)))
+                {
+                    var g = new Grammar(memoryStream);
+                    this.speechEngine.LoadGrammar(g);
+                }
+
+                this.speechEngine.SpeechRecognized += this.SpeechRecognized;
+
+                // let the convertStream know speech is going active
+                this.convertStream.SpeechActive = true;
+
+                // For long recognition sessions (a few hours or more), it may be beneficial to turn off adaptation of the acoustic model. 
+                // This will prevent recognition accuracy from degrading over time.
+                ////speechEngine.UpdateRecognizerSetting("AdaptationOn", 0);
+
+                this.speechEngine.SetInputToAudioStream(
+                    this.convertStream, new SpeechAudioFormatInfo(EncodingFormat.Pcm, 16000, 16, 1, 32000, 2, null));
+                this.speechEngine.RecognizeAsync(RecognizeMode.Multiple);
+            }
+            else
+            {
+                // NoSpeechRecognizer
+            }
+
+            // Face detection
             for (int i = 0; i < this.bodyCount; i++)
             {
                 if (this.faceFrameReaders[i] != null)
@@ -384,6 +496,57 @@ namespace Microsoft.Samples.Kinect.FaceBasics
                 // wire handler for body frame arrival
                 this.bodyFrameReader.FrameArrived += this.Reader_BodyFrameArrived;
             }
+        }
+
+        /// <summary>
+        /// Handler for recognized speech events.
+        /// </summary>
+        /// <param name="sender">object sending the event.</param>
+        /// <param name="e">event arguments.</param>
+        private void SpeechRecognized(object sender, SpeechRecognizedEventArgs e)
+        {
+            // Speech utterance confidence below which we treat speech as if it hadn't been heard
+            const double ConfidenceThreshold = 0.6;
+
+            // Number of degrees in a right angle.
+            const int DegreesInRightAngle = 90;
+
+            // Number of pixels turtle should move forwards or backwards each time.
+            const int DisplacementAmount = 60;
+
+            if (e != null && e.Result != null && e.Result.Text != null && e.Result.Confidence >= ConfidenceThreshold)
+            {
+                Debug.WriteLine("COMMAND => " + e.Result.Text + " @ " + e.Result.Confidence);
+            }
+
+            if (e.Result.Confidence >= ConfidenceThreshold)
+            {
+                switch (e.Result.Semantics.Value.ToString())
+                {
+                    case "TILL I COLLAPSE ON":
+                        this.PushEventToUserInterface("tillicollapsedon");
+                        break;
+                    case "I AM TIRED":
+                        this.PushEventToUserInterface("iamtired");
+                        break;
+                    case "WATCH SILICON VALLEY":
+                        this.PushEventToUserInterface("watchsiliconvalley");
+                        break;
+                    case "WATCH HOUSE OF CARDS":
+                        this.PushEventToUserInterface("watchhouseofcards");
+                        break;
+                    case "SHOW MY STUFF":
+                        this.PushEventToUserInterface("showmystuff");
+                        break;
+                }
+            }
+        }
+
+        private void PushEventToUserInterface(string eventId)
+        {
+            var pusher = new Pusher(PusherCredentials.AppId, PusherCredentials.AppKey, PusherCredentials.AppSecret);
+
+            var result = pusher.Trigger("collapse", eventId, null);
         }
 
         /// <summary>
@@ -488,6 +651,11 @@ namespace Microsoft.Samples.Kinect.FaceBasics
                     // update body data
                     bodyFrame.GetAndRefreshBodyData(this.bodies);
 
+                    if (this.bodies[0].HandLeftState == HandState.Closed)
+                    {
+                        this.handSignals.OnNext(this.bodies[0].HandLeftState);
+                    }
+
                     using (DrawingContext dc = this.drawingGroup.Open())
                     {
                         // draw the dark background
@@ -585,7 +753,7 @@ namespace Microsoft.Samples.Kinect.FaceBasics
                         || item.Key == FaceProperty.RightEyeClosed
                         || item.Key == FaceProperty.LookingAway)
                     {
-                        this.signals.OnNext(item);
+                        this.faceSignals.OnNext(item);
                     }
 
                     // consider a "maybe" as a "no" to restrict 

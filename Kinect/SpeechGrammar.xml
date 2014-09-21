@@ -1,0 +1,39 @@
+﻿<grammar version="1.0" xml:lang="en-US" root="rootRule" tag-format="semantics/1.0-literals" xmlns="http://www.w3.org/2001/06/grammar">
+  <rule id="rootRule">
+    <one-of>
+      <item>
+        <tag>TILL I COLLAPSE ON</tag>
+        <one-of>
+          <item> till i collapse on </item>
+          <item> till i collapse mode on </item>
+        </one-of>
+      </item>
+      <item>
+        <tag>I AM TIRED</tag>
+        <one-of>
+          <item> i am tired </item>
+          <item> till i collapse off </item>
+          <item> till i collapse mode off </item>
+        </one-of>
+      </item>
+      <item>
+        <tag>WATCH SILICON VALLEY</tag>
+        <one-of>
+          <item> watch silicon valey </item>
+        </one-of>
+      </item>
+      <item>
+        <tag>WATCH HOUSE OF CARDS</tag>
+        <one-of>
+          <item> watch house of cards </item>
+        </one-of>
+      </item>
+      <item>
+        <tag>SHOW MY STUFF</tag>
+        <one-of>
+          <item> show my stuff </item>
+        </one-of>
+      </item>
+    </one-of>
+  </rule>
+</grammar>
