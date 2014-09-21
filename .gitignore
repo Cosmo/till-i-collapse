@@ -22,3 +22,5 @@
 *.m4v
 
 Rails/config/secrets.yml
+
+*.mp4

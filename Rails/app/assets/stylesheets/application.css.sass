@@ -18,14 +18,20 @@
 @import "font-awesome"
 
 #video-wrapper
-  position: absolute
+  position: fixed
   top: 0
   left: 0
   right: 0
   bottom: 0
   z-index: 900
   background-color: #000000
-  display: none
+  -webkit-transform: scale(4.5)
+  -webkit-transition: all 0.5s ease-in-out
+  pointer-events: none
+  opacity: 0.0
+  &.active
+    -webkit-transform: scale(1.0)
+    opacity: 1.0
 
 #backward
   width: 200px
@@ -40,7 +46,13 @@
   background-color: rgba(0,0,0,.6)
   z-index: 9999
   text-align: center
-
+  -webkit-transform: scale(2.0)
+  -webkit-transition: all 0.5s ease-in-out
+  pointer-events: none
+  opacity: 0.0
+  &.active
+    -webkit-transform: scale(1.0)
+    opacity: 1.0
   .fa
     margin-top: 60px
     margin-left: -10px
@@ -58,7 +70,11 @@ html, body
   background: #111
 
 h1
-  font-size: 48px
+  font-size: 80px
+  font-family: "alternate-gothic-no-1-d", sans-serif
+  text-transform: uppercase
+  letter-spacing: 0.02em
+  font-weight: 400
 
 h2
   font-size: 24px
@@ -96,27 +112,40 @@ h2
       overflow: hidden
 
       .wrapper
-        width: 2480px
+        width: 6000px
         float: left
         position: relative
         top: 0
         left: 0
         -webkit-transition-property: left
-        -webkit-transition-duration: 0.4s
+        -webkit-transition-duration: 0.2s
+        transition-timing-function: ease-in-out
         &.breakingbad
-          left: -620px
+          left: -600px
         &.dexter
-          left: -1240px
+          left: -1200px
         &.gameofthrones
-          left: -1860px
+          left: -1800px
+        &.agentsofshield
+          left: -2400px
+        &.arrow
+          left: -3000px
+        &.houseofcards
+          left: -3600px
+        &.sherlock
+          left: -4200px
+        &.cosmos
+          left: -4800px
+        &.blacksails
+          left: -5400px
 
         .item
           width: 600px
-          margin-right: 20px
           float: left
 
       .fa-star.primary
-        color: red
+        color: #F00
+        color: #EA060E
 
   #poster-image
     width: 100%
@@ -128,51 +157,106 @@ h2
     overflow: hidden
 
     .wrapper
-      width: 400%
+      width: 1000%
       height: 100%
       position: relative
       top: 0
       left: 0
       -webkit-transition-property: left
-      -webkit-transition-duration: 0.4s
+      -webkit-transition-duration: 0.6s
+      transition-timing-function: ease
       &.breakingbad
         left: -100%
       &.dexter
         left: -200%
       &.gameofthrones
         left: -300%
+      &.agentsofshield
+        left: -400%
+      &.arrow
+        left: -500%
+      &.houseofcards
+        left: -600%
+      &.sherlock
+        left: -700%
+      &.cosmos
+        left: -800%
+      &.blacksails
+        left: -900%
 
       .item-1
         float: left
-        width: 25%
+        width: 10%
         height: 100%
         background-image: image-url("header/siliconvalley.jpg")
         background-size: cover
 
       .item-2
         float: left
-        width: 25%
+        width: 10%
         height: 100%
         background-image: image-url("header/breakingbad.jpg")
         background-size: cover
 
       .item-3
         float: left
-        width: 25%
+        width: 10%
         height: 100%
         background-image: image-url("header/dexter.jpg")
         background-size: cover
         
       .item-4
         float: left
-        width: 25%
+        width: 10%
         height: 100%
         background-image: image-url("header/gameofthrones.jpg")
         background-size: cover
         background-position: 0 -160px
 
+      .item-5
+        float: left
+        width: 10%
+        height: 100%
+        background-image: image-url("header/agentsofshield.jpg")
+        background-size: cover
+
+      .item-6
+        float: left
+        width: 10%
+        height: 100%
+        background-image: image-url("header/arrow.jpg")
+        background-size: cover
+
+      .item-7
+        float: left
+        width: 10%
+        height: 100%
+        background-image: image-url("header/houseofcards.jpg")
+        background-size: cover
+
+      .item-8
+        float: left
+        width: 10%
+        height: 100%
+        background-image: image-url("header/sherlock.jpg")
+        background-size: cover
+
+      .item-9
+        float: left
+        width: 10%
+        height: 100%
+        background-image: image-url("header/cosmos.jpg")
+        background-size: cover
+
+      .item-10
+        float: left
+        width: 10%
+        height: 100%
+        background-image: image-url("header/blacksails.jpg")
+        background-size: cover
+
 #mode
-  position: absolute
+  position: fixed
   top: 20px
   right: 20px
   z-index: 9000
@@ -183,9 +267,16 @@ h2
   line-height: 50px
   border-radius: 6px
   color: #fff
-  display: none
   font-size: 20px
   border: 2px solid black
+  
+  -webkit-transform: scale(2.5)
+  -webkit-transition: all 0.25s ease-in-out
+  pointer-events: none
+  opacity: 0.0
+  &.active
+    -webkit-transform: scale(1.0)
+    opacity: 1.0
 
   span
     color: lime
@@ -196,22 +287,25 @@ h2
   float: left
   color: #fff
 
+  h2
+    color: #555
+
   .list
     width: 300%
-    height: 184px
+    height: 208px
     overflow: hidden
     float: left
     margin-bottom: 40px
 
 .list-item
-  width: 120px
-  height: 180px
+  width: 130px
+  height: 200px
   float: left
   margin-right: 10px
-  border: 2px solid #000
+  border: 4px solid #000
   position: relative
   &.active
-    border-color: red
+    border-color: #fff
 
   &.siliconvalley
     background-image: image-url("poster/siliconvalley.jpg")
@@ -221,8 +315,8 @@ h2
       position: absolute
       left: 4px
       bottom: 4px
-      background-color: red
-      height: 2px
+      background-color: #EA060E
+      height: 4px
       width: 60px
 
   &.breakingbad
@@ -237,15 +331,6 @@ h2
   &.agentsofshield
     background-image: image-url("poster/agentsofshield.jpg")
     background-size: cover
-    &:after
-      content: ""
-      position: absolute
-      left: 4px
-      bottom: 4px
-      background-color: red
-      height: 2px
-      width: 20px
-
   &.arrow
     background-image: image-url("poster/arrow.jpg")
     background-size: cover
@@ -268,6 +353,14 @@ h2
   &.houseofcards
     background-image: image-url("poster/houseofcards.jpg")
     background-size: cover
+    &:after
+      content: ""
+      position: absolute
+      left: 4px
+      bottom: 4px
+      background-color: #EA060E
+      height: 4px
+      width: 20px
   &.madmen
     background-image: image-url("poster/madmen.jpg")
     background-size: cover
@@ -298,3 +391,8 @@ h2
   &.hannibal
     background-image: image-url("poster/hannibal.jpg")
     background-size: cover
+
+#video-wrapper
+  background-image: image-url("header/houseofcards.jpg")
+  background-size: cover
+  background-position: center top
