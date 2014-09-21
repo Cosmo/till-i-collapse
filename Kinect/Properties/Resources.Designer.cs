@@ -95,5 +95,30 @@ namespace Microsoft.Samples.Kinect.FaceBasics.Properties {
                 return ResourceManager.GetString("SensorNotAvailableStatusText", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to &lt;grammar version=&quot;1.0&quot; xml:lang=&quot;en-US&quot; root=&quot;rootRule&quot; tag-format=&quot;semantics/1.0-literals&quot; xmlns=&quot;http://www.w3.org/2001/06/grammar&quot;&gt;
+        ///  &lt;rule id=&quot;rootRule&quot;&gt;
+        ///    &lt;one-of&gt;
+        ///      &lt;item&gt;
+        ///        &lt;tag&gt;TILL I COLLAPSE ON&lt;/tag&gt;
+        ///        &lt;one-of&gt;
+        ///          &lt;item&gt; till i collapse on &lt;/item&gt;
+        ///          &lt;item&gt; till i collapse mode on &lt;/item&gt;
+        ///        &lt;/one-of&gt;
+        ///      &lt;/item&gt;
+        ///      &lt;item&gt;
+        ///        &lt;tag&gt;I AM TIRED&lt;/tag&gt;
+        ///        &lt;one-of&gt;
+        ///          &lt;item&gt; i am tired &lt;/item&gt;
+        ///        &lt;/one-of&gt;
+        ///      &lt;/item&gt;
+        ///     [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string SpeechGrammar {
+            get {
+                return ResourceManager.GetString("SpeechGrammar", resourceCulture);
+            }
+        }
     }
 }
